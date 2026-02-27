@@ -1,0 +1,9 @@
+{
+	"id": "daily-tasks",
+	"name": "Daily Tasks",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Crea y abre una nota de tareas diaria en una carpeta dedicada, separada de Daily Notes.",
+	"author": "Nicolas Valentino",
+	"isDesktopOnly": false
+}
