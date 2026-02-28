@@ -1,48 +1,101 @@
-# Daily Tasks - Obsidian Plugin
+<p align="center">
+  <strong>Daily Tasks</strong><br>
+  <sub>Plugin para Obsidian</sub>
+</p>
 
-Plugin para crear y abrir notas de tareas diarias en una carpeta dedicada, separada de Daily Notes.
+<p align="center">
+  <i>Tareas del día. Súper simples.</i>
+</p>
 
-## Qué hace
+<p align="center">
+  <a href="#-la-idea">La idea</a> •
+  <a href="#-instalación">Instalación</a> •
+  <a href="#-configuración">Configuración</a> •
+  <a href="#-comandos">Comandos</a>
+</p>
 
-- Crea una carpeta `tasks/` (configurable) en tu vault
-- Al hacer clic en el icono o usar el comando, abre/crea una nota con la fecha de hoy
-- Cada nota es un archivo markdown con checklist (`- [ ] tarea`)
-- Podés agregar tareas rápido con el comando "Agregar tarea"
+---
 
-## Instalación manual
+<br>
 
-1. Cloná o descargá este repo
-2. `npm install`
-3. `npm run build`
-4. Copiá `main.js`, `manifest.json` a tu vault en `.obsidian/plugins/daily-tasks/`
-5. Reiniciá Obsidian y activá el plugin en Settings > Community plugins
+## ✨ La idea
 
-## Desarrollo
+No es un gestor de tareas. No es un to-do complicado.
+
+Es **Daily Tasks**: una nota por día donde vas anotando lo que **estás haciendo** y lo vas tachando. Sin listas infinitas, sin prioridades, sin fechas de vencimiento. Solo vos y lo que hiciste hoy.
+
+> Inspirado en **Daily Notes**, pero pensado para tareas: todo queda agrupado por día. Un registro claro de cada jornada, dentro de tu vault.
+
+<br>
+
+| | |
+|:---:|:---|
+| **Un día = una nota** | Carpeta dedicada (por defecto `tasks/`) |
+| **Checkboxes** | Marcás lo que ya hiciste |
+| **Comandos rápidos** | Abrís las tareas de hoy o agregás una tarea al vuelo |
+
+<br>
+
+*Ideal si te gusta el flujo de Daily Notes pero querés algo enfocado solo en tareas.*
+
+---
+
+<br>
+
+## 📦 Instalación
+
+1. **Descargá** o cloná este repositorio.
+2. En la carpeta del proyecto: `npm install` y luego `npm run build`.
+3. **Copiá** `main.js` y `manifest.json` en tu vault:  
+   `.obsidian/plugins/daily-tasks/`
+4. **Reiniciá** Obsidian y activá el plugin en *Settings → Community plugins*.
+
+---
+
+<br>
+
+## ⚙️ Configuración
+
+En **Settings → Daily Tasks** podés ajustar:
+
+| Opción | Descripción |
+|--------|-------------|
+| **Carpeta** | Dónde se guardan las notas (por defecto: `tasks`) |
+| **Formato de fecha** | Nombre del archivo (por defecto: `YYYY-MM-DD`) |
+| **Template** | Contenido inicial. Variables: `{{date}}`, `{{today}}` |
+
+---
+
+<br>
+
+## ⌘ Comandos
+
+| Comando | Descripción |
+|---------|-------------|
+| **Abrir tareas de hoy** | Abre o crea la nota del día |
+| **Agregar tarea** | Añade un checkbox a las tareas de hoy |
+
+---
+
+<br>
+
+## 🛠 Desarrollo
 
 ```bash
 npm install
-npm run dev   # Watch mode - rebuilds on changes
+npm run dev   # Watch: recompila al guardar
 ```
 
-Para testear, hacé un symlink desde el build al vault:
+Para probar en tu vault sin copiar archivos cada vez:
 
 ```bash
 ln -s /ruta/a/este/repo /ruta/a/tu/vault/.obsidian/plugins/daily-tasks
 ```
 
-## Configuración
+---
 
-En Settings > Daily Tasks podés configurar:
+<br>
 
-- **Carpeta**: Nombre de la carpeta donde se guardan las tareas (default: `tasks`)
-- **Formato de fecha**: Formato del nombre del archivo (default: `YYYY-MM-DD`)
-- **Template**: Contenido inicial de cada nota. Variables disponibles:
-  - `{{date}}` - Fecha formateada según el formato configurado
-  - `{{today}}` - Fecha en formato legible (ej: "26 de febrero de 2026")
-
-## Comandos
-
-| Comando | Descripción |
-|---------|-------------|
-| Abrir tareas de hoy | Abre o crea la nota de tareas del día |
-| Agregar tarea | Agrega un nuevo checkbox a las tareas de hoy |
+<p align="center">
+  <sub>Licencia MIT</sub>
+</p>

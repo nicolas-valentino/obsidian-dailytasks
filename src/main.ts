@@ -1,4 +1,4 @@
-import { Notice, Plugin, TFile, moment } from "obsidian";
+import { Notice, Plugin, TFile, TFolder } from "obsidian";
 import {
 	DailyTasksSettings,
 	DailyTasksSettingTab,
@@ -12,22 +12,35 @@ export default class DailyTasksPlugin extends Plugin {
 		await this.loadSettings();
 
 		// Icono en la barra lateral
-		this.addRibbonIcon("check-square", "Abrir tareas de hoy", () => {
-			this.openTodayTasks();
+		this.addRibbonIcon("checkbox-glyph", "Abrir tareas de hoy", () => {
+			this.openTodayTasks().catch((err) => {
+				console.error("Daily Tasks:", err);
+				new Notice(`Error: ${err.message}`);
+			});
 		});
 
 		// Comando para el command palette
 		this.addCommand({
 			id: "open-today-tasks",
 			name: "Abrir tareas de hoy",
-			callback: () => this.openTodayTasks(),
+			callback: () => {
+				this.openTodayTasks().catch((err) => {
+					console.error("Daily Tasks:", err);
+					new Notice(`Error: ${err.message}`);
+				});
+			},
 		});
 
 		// Comando para agregar una tarea rápida
 		this.addCommand({
 			id: "add-task",
 			name: "Agregar tarea",
-			callback: () => this.addTask(),
+			callback: () => {
+				this.addTask().catch((err) => {
+					console.error("Daily Tasks:", err);
+					new Notice(`Error: ${err.message}`);
+				});
+			},
 		});
 
 		this.addSettingTab(new DailyTasksSettingTab(this.app, this));
@@ -38,13 +51,16 @@ export default class DailyTasksPlugin extends Plugin {
 		const leaf = this.app.workspace.getLeaf(false);
 		await leaf.openFile(file);
 
-		// Mover cursor al final del archivo
-		const editor = this.app.workspace.activeEditor?.editor;
-		if (editor) {
-			const lastLine = editor.lastLine();
-			const lastCh = editor.getLine(lastLine).length;
-			editor.setCursor({ line: lastLine, ch: lastCh });
-		}
+		// Pequeño delay para que el editor se monte
+		setTimeout(() => {
+			const editor =
+				this.app.workspace.activeEditor?.editor;
+			if (editor) {
+				const lastLine = editor.lastLine();
+				const lastCh = editor.getLine(lastLine).length;
+				editor.setCursor({ line: lastLine, ch: lastCh });
+			}
+		}, 100);
 
 		return file;
 	}
@@ -58,30 +74,43 @@ export default class DailyTasksPlugin extends Plugin {
 		const leaf = this.app.workspace.getLeaf(false);
 		await leaf.openFile(file);
 
-		const editor = this.app.workspace.activeEditor?.editor;
-		if (editor) {
-			const lastLine = editor.lastLine();
-			const lastCh = editor.getLine(lastLine).length;
-			editor.setCursor({ line: lastLine, ch: lastCh });
-		}
+		setTimeout(() => {
+			const editor =
+				this.app.workspace.activeEditor?.editor;
+			if (editor) {
+				const lastLine = editor.lastLine();
+				const lastCh = editor.getLine(lastLine).length;
+				editor.setCursor({ line: lastLine, ch: lastCh });
+			}
+		}, 100);
 	}
 
 	private async ensureTodayFile(): Promise<TFile> {
-		const today = moment();
-		const fileName = today.format(this.settings.dateFormat);
-		const path = `${this.settings.folder}/${fileName}.md`;
+		// moment está disponible globalmente en Obsidian
+		const today = (window as any).moment();
+		if (!today || !today.format) {
+			throw new Error("moment() no disponible");
+		}
 
+		const fileName = today.format(this.settings.dateFormat);
+		const folder = this.settings.folder.replace(/\/+$/, "");
+		const path = `${folder}/${fileName}.md`;
+
+		// Si ya existe, retornar
 		const existing = this.app.vault.getAbstractFileByPath(path);
 		if (existing instanceof TFile) {
 			return existing;
 		}
 
-		// Crear carpeta si no existe
-		const folderExists = this.app.vault.getAbstractFileByPath(
-			this.settings.folder
-		);
-		if (!folderExists) {
-			await this.app.vault.createFolder(this.settings.folder);
+		// Crear carpeta si no existe (try/catch por si ya existe en disco pero no en cache)
+		try {
+			const folderNode =
+				this.app.vault.getAbstractFileByPath(folder);
+			if (!folderNode) {
+				await this.app.vault.createFolder(folder);
+			}
+		} catch {
+			// La carpeta ya existe, todo bien
 		}
 
 		// Aplicar template
