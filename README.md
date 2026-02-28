@@ -1,95 +1,95 @@
 <p align="center">
   <strong>Daily Tasks</strong><br>
-  <sub>Plugin para Obsidian</sub>
+  <sub>Obsidian Plugin</sub>
 </p>
 
 <p align="center">
-  <i>Tareas del día. Súper simples.</i>
+  <i>Today's tasks. Dead simple.</i>
 </p>
 
 <p align="center">
-  <a href="#-la-idea">La idea</a> •
-  <a href="#-instalación">Instalación</a> •
-  <a href="#-configuración">Configuración</a> •
-  <a href="#-comandos">Comandos</a>
+  <a href="#-the-idea">The idea</a> •
+  <a href="#-installation">Installation</a> •
+  <a href="#-settings">Settings</a> •
+  <a href="#-commands">Commands</a>
 </p>
 
 ---
 
 <br>
 
-## ✨ La idea
+## ✨ The idea
 
-No es un gestor de tareas. No es un to-do complicado.
+Not a task manager. Not a complicated to-do app.
 
-Es **Daily Tasks**: una nota por día donde vas anotando lo que **estás haciendo** y lo vas tachando. Sin listas infinitas, sin prioridades, sin fechas de vencimiento. Solo vos y lo que hiciste hoy.
+**Daily Tasks** gives you one note per day where you write down what you're **actually doing** and check things off as you go. No infinite lists, no priorities, no due dates. Just you and what you got done today.
 
-> Inspirado en **Daily Notes**, pero pensado para tareas: todo queda agrupado por día. Un registro claro de cada jornada, dentro de tu vault.
+> Inspired by **Daily Notes**, but built for tasks: everything grouped by day. A clean record of each workday, inside your vault.
 
 <br>
 
 | | |
 |:---:|:---|
-| **Un día = una nota** | Carpeta dedicada (por defecto `tasks/`) |
-| **Checkboxes** | Marcás lo que ya hiciste |
-| **Comandos rápidos** | Abrís las tareas de hoy o agregás una tarea al vuelo |
+| **One day = one note** | Dedicated folder (default: `tasks/`) |
+| **Checkboxes** | Check off what you've done |
+| **Quick commands** | Open today's tasks or add a new one on the fly |
 
 <br>
 
-*Ideal si te gusta el flujo de Daily Notes pero querés algo enfocado solo en tareas.*
+*Perfect if you like the Daily Notes workflow but want something focused purely on tasks.*
 
 ---
 
 <br>
 
-## 📦 Instalación
+## 📦 Installation
 
-1. **Descargá** o cloná este repositorio.
-2. En la carpeta del proyecto: `npm install` y luego `npm run build`.
-3. **Copiá** `main.js` y `manifest.json` en tu vault:  
+1. **Download** or clone this repo.
+2. Run `npm install` then `npm run build`.
+3. **Copy** `main.js` and `manifest.json` into your vault:
    `.obsidian/plugins/daily-tasks/`
-4. **Reiniciá** Obsidian y activá el plugin en *Settings → Community plugins*.
+4. **Restart** Obsidian and enable the plugin in *Settings → Community plugins*.
 
 ---
 
 <br>
 
-## ⚙️ Configuración
+## ⚙️ Settings
 
-En **Settings → Daily Tasks** podés ajustar:
+In **Settings → Daily Tasks** you can configure:
 
-| Opción | Descripción |
+| Option | Description |
 |--------|-------------|
-| **Carpeta** | Dónde se guardan las notas (por defecto: `tasks`) |
-| **Formato de fecha** | Nombre del archivo (por defecto: `YYYY-MM-DD`) |
-| **Template** | Contenido inicial. Variables: `{{date}}`, `{{today}}` |
+| **Folder** | Where task notes are stored (default: `tasks`) |
+| **Date format** | Filename format (default: `YYYY-MM-DD`) |
+| **Template** | Initial note content. Variables: `{{date}}`, `{{today}}` |
 
 ---
 
 <br>
 
-## ⌘ Comandos
+## ⌘ Commands
 
-| Comando | Descripción |
+| Command | Description |
 |---------|-------------|
-| **Abrir tareas de hoy** | Abre o crea la nota del día |
-| **Agregar tarea** | Añade un checkbox a las tareas de hoy |
+| **Open today's tasks** | Opens or creates today's task note |
+| **Add task** | Appends a new checkbox to today's tasks |
 
 ---
 
 <br>
 
-## 🛠 Desarrollo
+## 🛠 Development
 
 ```bash
 npm install
-npm run dev   # Watch: recompila al guardar
+npm run dev   # Watch mode: rebuilds on save
 ```
 
-Para probar en tu vault sin copiar archivos cada vez:
+To test in your vault without copying files every time:
 
 ```bash
-ln -s /ruta/a/este/repo /ruta/a/tu/vault/.obsidian/plugins/daily-tasks
+ln -s /path/to/this/repo /path/to/your/vault/.obsidian/plugins/daily-tasks
 ```
 
 ---
@@ -97,5 +97,5 @@ ln -s /ruta/a/este/repo /ruta/a/tu/vault/.obsidian/plugins/daily-tasks
 <br>
 
 <p align="center">
-  <sub>Licencia MIT</sub>
+  <sub>MIT License</sub>
 </p>
