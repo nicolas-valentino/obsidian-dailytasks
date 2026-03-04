@@ -1,4 +1,4 @@
-import { Notice, Plugin, TFile, TFolder } from "obsidian";
+import { Notice, Plugin, TFile } from "obsidian";
 import {
 	DailyTasksSettings,
 	DailyTasksSettingTab,
@@ -9,120 +9,104 @@ export default class DailyTasksPlugin extends Plugin {
 	settings: DailyTasksSettings = DEFAULT_SETTINGS;
 
 	async onload() {
-		await this.loadSettings();
+		try {
+			await this.loadSettings();
 
-		// Icono en la barra lateral
-		this.addRibbonIcon("checkbox-glyph", "Abrir tareas de hoy", () => {
-			this.openTodayTasks().catch((err) => {
-				console.error("Daily Tasks:", err);
-				new Notice(`Error: ${err.message}`);
+			// Icono en la barra lateral (list-checks es un icono Lucide universal)
+			this.addRibbonIcon(
+				"list-checks",
+				"Open today's tasks",
+				() => {
+					this.openTodayTasks().catch((err) => {
+						console.error("Daily Tasks:", err);
+						new Notice("Error: " + err.message);
+					});
+				}
+			);
+
+			// Comando para el command palette
+			this.addCommand({
+				id: "open-today-tasks",
+				name: "Open today's tasks",
+				callback: () => {
+					this.openTodayTasks().catch((err) => {
+						console.error("Daily Tasks:", err);
+						new Notice("Error: " + err.message);
+					});
+				},
 			});
-		});
 
-		// Comando para el command palette
-		this.addCommand({
-			id: "open-today-tasks",
-			name: "Abrir tareas de hoy",
-			callback: () => {
-				this.openTodayTasks().catch((err) => {
-					console.error("Daily Tasks:", err);
-					new Notice(`Error: ${err.message}`);
-				});
-			},
-		});
+			// Comando para agregar una tarea rápida
+			this.addCommand({
+				id: "add-task",
+				name: "Add task",
+				callback: () => {
+					this.addTask().catch((err) => {
+						console.error("Daily Tasks:", err);
+						new Notice("Error: " + err.message);
+					});
+				},
+			});
 
-		// Comando para agregar una tarea rápida
-		this.addCommand({
-			id: "add-task",
-			name: "Agregar tarea",
-			callback: () => {
-				this.addTask().catch((err) => {
-					console.error("Daily Tasks:", err);
-					new Notice(`Error: ${err.message}`);
-				});
-			},
-		});
-
-		this.addSettingTab(new DailyTasksSettingTab(this.app, this));
+			this.addSettingTab(new DailyTasksSettingTab(this.app, this));
+		} catch (err) {
+			console.error("Daily Tasks failed to load:", err);
+		}
 	}
 
 	async openTodayTasks(): Promise<TFile> {
 		const file = await this.ensureTodayFile();
-		const leaf = this.app.workspace.getLeaf(false);
+		var leaf = this.app.workspace.getLeaf(false);
 		await leaf.openFile(file);
-
-		// Pequeño delay para que el editor se monte
-		setTimeout(() => {
-			const editor =
-				this.app.workspace.activeEditor?.editor;
-			if (editor) {
-				const lastLine = editor.lastLine();
-				const lastCh = editor.getLine(lastLine).length;
-				editor.setCursor({ line: lastLine, ch: lastCh });
-			}
-		}, 100);
-
 		return file;
 	}
 
 	async addTask(): Promise<void> {
 		const file = await this.ensureTodayFile();
-		const content = await this.app.vault.read(file);
+		var content = await this.app.vault.read(file);
 		await this.app.vault.modify(file, content + "\n- [ ] ");
 
-		// Abrir el archivo y mover al final
-		const leaf = this.app.workspace.getLeaf(false);
+		var leaf = this.app.workspace.getLeaf(false);
 		await leaf.openFile(file);
-
-		setTimeout(() => {
-			const editor =
-				this.app.workspace.activeEditor?.editor;
-			if (editor) {
-				const lastLine = editor.lastLine();
-				const lastCh = editor.getLine(lastLine).length;
-				editor.setCursor({ line: lastLine, ch: lastCh });
-			}
-		}, 100);
 	}
 
 	private async ensureTodayFile(): Promise<TFile> {
-		// moment está disponible globalmente en Obsidian
-		const today = (window as any).moment();
-		if (!today || !today.format) {
-			throw new Error("moment() no disponible");
+		var m = (window as any).moment;
+		if (!m) {
+			throw new Error("moment not available");
 		}
+		var today = m();
+		var fileName = today.format(this.settings.dateFormat);
+		var folder = this.settings.folder.replace(/\/+$/, "");
+		var path = folder + "/" + fileName + ".md";
 
-		const fileName = today.format(this.settings.dateFormat);
-		const folder = this.settings.folder.replace(/\/+$/, "");
-		const path = `${folder}/${fileName}.md`;
-
-		// Si ya existe, retornar
-		const existing = this.app.vault.getAbstractFileByPath(path);
+		// If file exists, return it
+		var existing = this.app.vault.getAbstractFileByPath(path);
 		if (existing instanceof TFile) {
 			return existing;
 		}
 
-		// Crear carpeta si no existe (try/catch por si ya existe en disco pero no en cache)
+		// Create folder if needed
 		try {
-			const folderNode =
+			var folderNode =
 				this.app.vault.getAbstractFileByPath(folder);
 			if (!folderNode) {
 				await this.app.vault.createFolder(folder);
 			}
 		} catch (_e) {
-			// Folder already exists, that's fine
+			// Folder already exists
 		}
 
-		// Aplicar template
-		const content = this.settings.template
+		// Apply template
+		var templateContent = this.settings.template
 			.replace(/\{\{date\}\}/g, fileName)
 			.replace(
 				/\{\{today\}\}/g,
 				today.format("DD [de] MMMM [de] YYYY")
 			);
 
-		const file = await this.app.vault.create(path, content);
-		new Notice(`Tareas creadas: ${fileName}`);
+		var file = await this.app.vault.create(path, templateContent);
+		new Notice("Tasks created: " + fileName);
 		return file;
 	}
 
