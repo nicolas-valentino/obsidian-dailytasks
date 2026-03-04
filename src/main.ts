@@ -109,8 +109,8 @@ export default class DailyTasksPlugin extends Plugin {
 			if (!folderNode) {
 				await this.app.vault.createFolder(folder);
 			}
-		} catch {
-			// La carpeta ya existe, todo bien
+		} catch (_e) {
+			// Folder already exists, that's fine
 		}
 
 		// Aplicar template
