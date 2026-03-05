@@ -80,7 +80,7 @@ export default class DailyTasksPlugin extends Plugin {
 		var folder = this.settings.folder.replace(/\/+$/, "");
 		var path = folder + "/" + fileName + ".md";
 
-		// If file exists, return it
+		// If file exists in cache, return it
 		var existing = this.app.vault.getAbstractFileByPath(path);
 		if (existing instanceof TFile) {
 			return existing;
@@ -97,17 +97,31 @@ export default class DailyTasksPlugin extends Plugin {
 			// Folder already exists
 		}
 
-		// Apply template
-		var templateContent = this.settings.template
-			.replace(/\{\{date\}\}/g, fileName)
-			.replace(
-				/\{\{today\}\}/g,
-				today.format("DD [de] MMMM [de] YYYY")
-			);
+		// Try to create the file; if it already exists on disk (iCloud sync),
+		// catch the error and retrieve the existing file instead
+		try {
+			var templateContent = this.settings.template
+				.replace(/\{\{date\}\}/g, fileName)
+				.replace(
+					/\{\{today\}\}/g,
+					today.format("DD [de] MMMM [de] YYYY")
+				);
 
-		var file = await this.app.vault.create(path, templateContent);
-		new Notice("Tasks created: " + fileName);
-		return file;
+			var file = await this.app.vault.create(
+				path,
+				templateContent
+			);
+			new Notice("Tasks created: " + fileName);
+			return file;
+		} catch (_e) {
+			// File already exists on disk, try to get it from cache again
+			var retryFile =
+				this.app.vault.getAbstractFileByPath(path);
+			if (retryFile instanceof TFile) {
+				return retryFile;
+			}
+			throw new Error("Could not open or create: " + path);
+		}
 	}
 
 	async loadSettings() {
