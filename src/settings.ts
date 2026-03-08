@@ -8,7 +8,7 @@ export interface DailyTasksSettings {
 }
 
 export const DEFAULT_SETTINGS: DailyTasksSettings = {
-	folder: "tasks",
+	folder: "Tasks",
 	dateFormat: "YYYY-MM-DD",
 	template: "# Tareas - {{date}}\n\n- [ ] ",
 };
