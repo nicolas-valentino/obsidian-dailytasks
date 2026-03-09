@@ -11,6 +11,13 @@ export default class DailyTasksPlugin extends Plugin {
 	async onload() {
 		try {
 			await this.loadSettings();
+			// Persist settings so data.json exists on all devices
+			await this.saveSettings();
+
+			console.log(
+				"Daily Tasks v1.1.0 loaded — folder: " +
+					this.settings.folder
+			);
 
 			// Icono en la barra lateral (list-checks es un icono Lucide universal)
 			this.addRibbonIcon(
